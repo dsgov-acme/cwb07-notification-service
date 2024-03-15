@@ -1,0 +1,57 @@
+environment: "local"
+createIngress: true
+
+postgres:
+  enabled: false
+  persistence:
+    size: 1Gi
+  env:
+    POSTGRES_DB: "local-notification-service-db"
+    POSTGRES_HOST: 'postgres-14-alpine'
+    POSTGRES_PASSWORD: "root"
+    POSTGRES_PORT: 5432
+    POSTGRES_USER: "root"
+
+resources:
+  pubSubEmulator:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+net:
+  host: "api.cwb07.test"
+
+env:
+  ALLOWED_ORIGINS: "http://localhost:4200, http://localhost:4201, http://localhost:4202, http://agency.cwb07.test, http://public.cwb07.test, http://employer.cwb07.test"
+  DB_CONNECTION_URL: "jdbc:postgresql://notification-service-postgres:5432/local-notification-service-db"
+  DB_USERNAME: "root"
+  DB_PASSWORD: "root"
+  EMAIL_ACCOUNT_SENDER: ""
+  EMAIL_NAME_SENDER: ""
+  CERBOS_URI: "127.0.0.1:3592"
+  GCP_PROJECT_ID: "cwb07-dev"
+  SELF_SIGN_PUBLIC_KEY: "${sm://projects/cwb07-dev/secrets/cwb07-self-signed-token-public-key/versions/latest}"
+  SELF_SIGN_PRIVATE_KEY: "${sm://projects/cwb07-dev/secrets/cwb07-self-signed-token-private-key/versions/latest}"
+  USER_MANAGEMENT_BASE_URL: "http://user-management/um"
+  PUB_SUB_TOPIC: "projects/cwb07-dev/topics/NOTIFICATION_MSG_QUEUE"
+  DEAD_LETTER_TOPIC: "projects/cwb07-dev/topics/NOTIFICATION_DEAD_LETTER"
+  PUB_SUB_TOPIC_SUBSCRIPTION: "projects/cwb07-dev/subscriptions/NOTIFICATION_MSG_QUEUE_SUBSCRIPTION"
+  EVENT_NOTIFICATION_TOPIC: "projects/cwb07-dev/topics/NOTIFICATION_REQUESTS"
+  EVENT_NOTIFICATION_SUBSCRIPTION: "projects/cwb07-dev/subscriptions/NOTIFICATION_REQUESTS_SUBSCRIPTION"
+  PUBSUB_EMULATOR_HOST: "pubsub-emulator-service:8085"
+  PUBSUB_EMULATOR_ENABLED: true
+  # topics separated by comma
+  PUBLISHER_TOPICS: projects/cwb07-dev/topics/APPLICATION_ROLE_REPORTING
+  PUBSUB_CREATE_TOPIC: true
+  TOKEN_ISSUER: "cwb07"
+  TOKEN_PRIVATE_KEY_VERSION: "latest"
+  TWILIO_ACCOUNT_SID: "${sm://projects/cwb07-dev/secrets/cwb07-twilio-account-sid/versions/latest}"
+  TWILIO_AUTH_TOKEN: "${sm://projects/cwb07-dev/secrets/cwb07-twilio-auth-token/versions/latest}"
+  TWILIO_PHONE_NUMBER: "${sm://projects/cwb07-dev/secrets/cwb07-twilio-sender-number/versions/latest}"
+  SEND_GRID_EMAIL_CONTENT_TYPE: "text/html"
+  SEND_GRID_EMAIL_ENDPOINT: "mail/send"
+  SEND_GRID_API_KEY: "${sm://projects/cwb07-dev/secrets/cwb07-sendgrid-api-key/versions/latest}"
+  SEND_GRID_SENDER: "${sm://projects/cwb07-dev/secrets/cwb07-sendgrid-sender-email/versions/latest}"
+  OTEL_SAMPLER_PROBABILITY: 1.0 # valid values: [0.0 - 1.0]
